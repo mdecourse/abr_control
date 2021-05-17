@@ -4,7 +4,7 @@ from .controller import Controller
 
 
 class Damping(Controller):
-    """ Base class for common null space controllers.
+    """Base class for common null space controllers.
 
     Parameters
     ----------
@@ -14,12 +14,12 @@ class Damping(Controller):
     """
 
     def __init__(self, robot_config, kv):
-        super(Damping, self).__init__(robot_config)
+        super().__init__(robot_config)
 
         self.kv = kv
 
     def generate(self, q, dq):
-        """ Generates the control signal
+        """Generates the control signal
 
         q : np.array
           the current joint angles [radians]

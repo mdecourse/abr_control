@@ -19,13 +19,13 @@ class Floating(Controller):
     """
 
     def __init__(self, robot_config, dynamic=False, task_space=False):
-        super(Floating, self).__init__(robot_config)
+        super().__init__(robot_config)
 
         self.dynamic = dynamic
         self.task_space = task_space
 
     def generate(self, q, dq=None):
-        """ Generates the control signal to compensate for gravity
+        """Generates the control signal to compensate for gravity
         Parameters
         ----------
         q : float numpy.array

@@ -1,5 +1,6 @@
 # Config file for UR5 in VREP
 import os
+
 import numpy as np
 import sympy as sp
 
@@ -7,7 +8,7 @@ from ..base_config import BaseConfig
 
 
 class Config(BaseConfig):
-    """ Robot config file for the UR5
+    """Robot config file for the UR5
 
     Attributes
     ----------
@@ -33,7 +34,7 @@ class Config(BaseConfig):
 
     def __init__(self, **kwargs):
 
-        super(Config, self).__init__(N_JOINTS=6, N_LINKS=7, ROBOT_NAME="ur5", **kwargs)
+        super().__init__(N_JOINTS=6, N_LINKS=7, ROBOT_NAME="ur5", **kwargs)
         self.filename = "%s/ur5.ttt" % os.path.dirname(os.path.abspath(__file__))
         self.google_id = "1EDM6H9hbFhCjcsfm0p2lQ1K55o5Yi1VV"
         self._T = {}  # dictionary for storing calculated transforms
@@ -298,7 +299,7 @@ class Config(BaseConfig):
         ]  # joint 5 orientation
 
     def _calc_T(self, name):  # noqa C907
-        """ Uses Sympy to generate the transform for a joint or link
+        """Uses Sympy to generate the transform for a joint or link
 
         name : string
             name of the joint, link, or end-effector

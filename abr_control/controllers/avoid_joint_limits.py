@@ -4,7 +4,7 @@ from .controller import Controller
 
 
 class AvoidJointLimits(Controller):
-    """ Pushes  joints away from set limits
+    """Pushes  joints away from set limits
 
     Pass in a set of maximum and minimum joint angles, along with a maximum
     force to push away with. As the joints near their limit the opposing force
@@ -40,7 +40,7 @@ class AvoidJointLimits(Controller):
         cross_zero=None,
         gradient=None,
     ):
-        super(AvoidJointLimits, self).__init__(robot_config)
+        super().__init__(robot_config)
 
         # shift limits to -pi to pi range
         for ii in range(0, robot_config.N_JOINTS):
@@ -81,7 +81,7 @@ class AvoidJointLimits(Controller):
         )
 
     def generate(self, q, dq):
-        """ Generates the control signal
+        """Generates the control signal
 
         q : np.array
           the current joint angles [radians]

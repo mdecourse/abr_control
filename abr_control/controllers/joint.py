@@ -4,7 +4,7 @@ from .controller import Controller
 
 
 class Joint(Controller):
-    """ Implements a joint space controller
+    """Implements a joint space controller
 
     Moves the arm joints to a set of specified target angles
 
@@ -20,7 +20,7 @@ class Joint(Controller):
     """
 
     def __init__(self, robot_config, kp=1, kv=None):
-        super(Joint, self).__init__(robot_config)
+        super().__init__(robot_config)
 
         self.kp = kp
         self.kv = np.sqrt(self.kp) if kv is None else kv

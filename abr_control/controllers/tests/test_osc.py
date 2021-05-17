@@ -1,10 +1,10 @@
-import pytest
 import timeit
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pytest
 
-from abr_control.arms import twojoint, threejoint, ur5, jaco2
+from abr_control.arms import jaco2, threejoint, twojoint, ur5
 from abr_control.controllers import OSC
 from abr_control.utils import transformations
 
@@ -93,7 +93,14 @@ def calc_distance(Qe, Qd):
 
 @pytest.mark.parametrize(
     "arm, orientation_algorithm",
-    ((threejoint, 0), (threejoint, 1), (ur5, 0), (ur5, 1), (jaco2, 0), (jaco2, 1),),
+    (
+        (threejoint, 0),
+        (threejoint, 1),
+        (ur5, 0),
+        (ur5, 1),
+        (jaco2, 0),
+        (jaco2, 1),
+    ),
 )
 def test_calc_orientation_forces(arm, orientation_algorithm):
     robot_config = arm.Config(use_cython=False)

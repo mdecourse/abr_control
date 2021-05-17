@@ -1,15 +1,14 @@
-import numpy as np
-
 import mujoco_py as mjp
-
+import numpy as np
 from mujoco_py.generated import const
+
 from abr_control.utils import transformations
 
 from .interface import Interface
 
 
 class Mujoco(Interface):
-    """ An interface for MuJoCo using the mujoco-py package.
+    """An interface for MuJoCo using the mujoco-py package.
 
     Parameters
     ----------
@@ -33,7 +32,7 @@ class Mujoco(Interface):
         create_offscreen_rendercontext=False,
     ):
 
-        super(Mujoco, self).__init__(robot_config)
+        super().__init__(robot_config)
 
         self.dt = dt  # time step
         self.count = 0  # keep track of how many times send forces is called
@@ -47,7 +46,7 @@ class Mujoco(Interface):
         # if we want the offscreen render context
         self.create_offscreen_rendercontext = create_offscreen_rendercontext
 
-    def connect(self, joint_names=None, camera_id=-1):
+    def connect(self, joint_names=None, camera_id=-1, **kwargs):
         """
         joint_names: list, optional (Default: None)
             list of joint names to send control signal to and get feedback from
@@ -68,6 +67,22 @@ class Mujoco(Interface):
         self.joint_pos_addrs = [model.get_joint_qpos_addr(name) for name in joint_names]
         self.joint_vel_addrs = [model.get_joint_qvel_addr(name) for name in joint_names]
 
+        joint_pos_addrs = []
+        for elem in self.joint_pos_addrs:
+            if isinstance(elem, tuple):
+                joint_pos_addrs += list(range(elem[0], elem[1]))
+            else:
+                joint_pos_addrs.append(elem)
+        self.joint_pos_addrs = joint_pos_addrs
+
+        joint_vel_addrs = []
+        for elem in self.joint_vel_addrs:
+            if isinstance(elem, tuple):
+                joint_vel_addrs += list(range(elem[0], elem[1]))
+            else:
+                joint_vel_addrs.append(elem)
+        self.joint_vel_addrs = joint_vel_addrs
+
         # Need to also get the joint rows of the Jacobian, inertia matrix, and
         # gravity vector. This is trickier because if there's a quaternion in
         # the joint (e.g. a free joint or a ball joint) then the joint position
@@ -81,9 +96,11 @@ class Mujoco(Interface):
             if ii in joint_ids:
                 self.joint_dyn_addrs.append(index)
             if joint_type == 0:  # free joint
+                self.joint_dyn_addrs += [jj + index for jj in range(1, 6)]
                 index += 6  # derivative has 6 dimensions
             elif joint_type == 1:  # ball joint
-                index += 3  # derivative has 3 dimensions
+                self.joint_dyn_addrs += [jj + index for jj in range(1, 3)]
+                index += 3  # derivative has 3 dimension
             else:  # slide or hinge joint
                 index += 1  # derivative has 1 dimensions
 
@@ -100,7 +117,7 @@ class Mujoco(Interface):
 
         # create the visualizer
         if self.visualize:
-            self.viewer = mjp.MjViewer(self.sim)
+            self.viewer = mjp.MjViewer(self.sim, **kwargs)
             # if specified, set the camera
             if camera_id > -1:
                 self.viewer.cam.type = const.CAMERA_FIXED
@@ -114,8 +131,7 @@ class Mujoco(Interface):
         print("MuJoCO session closed...")
 
     def get_joints_in_ee_kinematic_tree(self):
-        """ Get the names and ids of joints connecting the end-effector to the world
-        """
+        """Get the names and ids of joints connecting the end-effector to the world"""
         model = self.sim.model
         # get the kinematic tree for the arm
         joint_ids = []
@@ -139,7 +155,7 @@ class Mujoco(Interface):
         return joint_ids, joint_names
 
     def get_orientation(self, name, object_type="body"):
-        """ Returns the orientation of an object as the [w x y z] quaternion [radians]
+        """Returns the orientation of an object as the [w x y z] quaternion [radians]
 
         Parameters
         ----------
@@ -166,7 +182,7 @@ class Mujoco(Interface):
         return np.copy(quat)
 
     def set_mocap_orientation(self, name, quat):
-        """ Sets the orientation of an object in the Mujoco environment
+        """Sets the orientation of an object in the Mujoco environment
 
         Sets the orientation of an object using the provided Euler angles.
         Angles must be in a relative xyz frame.
@@ -181,7 +197,7 @@ class Mujoco(Interface):
         self.sim.data.set_mocap_quat(name, quat)
 
     def send_forces(self, u, update_display=True):
-        """ Apply the specified torque to the robot joints
+        """Apply the specified torque to the robot joints
 
         Apply the specified torque to the robot joints, move the simulation
         one time step forward, and update the position of the hand object.
@@ -227,7 +243,7 @@ class Mujoco(Interface):
         self.sim.data.xfrc_applied[self.model.body_name2id(name)] = u_ext
 
     def send_target_angles(self, q):
-        """ Move the robot to the specified configuration.
+        """Move the robot to the specified configuration.
 
         Parameters
         ----------
@@ -239,7 +255,7 @@ class Mujoco(Interface):
         self.sim.forward()
 
     def set_joint_state(self, q, dq):
-        """ Move the robot to the specified configuration.
+        """Move the robot to the specified configuration.
 
         Parameters
         ----------
@@ -254,7 +270,7 @@ class Mujoco(Interface):
         self.sim.forward()
 
     def get_feedback(self):
-        """ Return a dictionary of information needed by the controller.
+        """Return a dictionary of information needed by the controller.
 
         Returns the joint angles and joint velocities in [rad] and [rad/sec],
         respectively
@@ -266,7 +282,7 @@ class Mujoco(Interface):
         return {"q": self.q, "dq": self.dq}
 
     def get_xyz(self, name, object_type="body"):
-        """ Returns the xyz position of the specified object
+        """Returns the xyz position of the specified object
 
         name: string
             name of the object you want the xyz position of
@@ -288,7 +304,7 @@ class Mujoco(Interface):
         return np.copy(xyz)
 
     def set_mocap_xyz(self, name, xyz):
-        """ Set the position of a mocap object in the Mujoco environment.
+        """Set the position of a mocap object in the Mujoco environment.
 
         name: string
             the name of the object

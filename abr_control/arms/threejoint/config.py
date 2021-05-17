@@ -5,7 +5,7 @@ from ..base_config import BaseConfig
 
 
 class Config(BaseConfig):
-    """ Robot config file for the three joint MapleSim arm
+    """Robot config file for the three joint MapleSim arm
 
     Attributes
     ----------
@@ -31,9 +31,7 @@ class Config(BaseConfig):
 
     def __init__(self, **kwargs):
 
-        super(Config, self).__init__(
-            N_JOINTS=3, N_LINKS=4, ROBOT_NAME="threejoint", **kwargs
-        )
+        super().__init__(N_JOINTS=3, N_LINKS=4, ROBOT_NAME="threejoint", **kwargs)
 
         self._T = {}  # dictionary for storing calculated transforms
 
@@ -195,7 +193,7 @@ class Config(BaseConfig):
         ]  # joint 2 orientation
 
     def _calc_T(self, name):
-        """ Uses Sympy to generate the transform for a joint or link
+        """Uses Sympy to generate the transform for a joint or link
 
         name : string
             name of the joint, link, or end-effector

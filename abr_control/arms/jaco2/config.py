@@ -1,14 +1,16 @@
 # Config file for Jaco 2 in VREP
 import os
+
 import numpy as np
 import sympy as sp
 
 import abr_control
+
 from ..base_config import BaseConfig
 
 
 class Config(BaseConfig):
-    """ Robot config file for the Kinova Jaco^2 V2
+    """Robot config file for the Kinova Jaco^2 V2
 
     Attributes
     ----------
@@ -34,7 +36,7 @@ class Config(BaseConfig):
 
         N_LINKS = 7
         N_JOINTS = 6
-        super(Config, self).__init__(
+        super().__init__(
             N_JOINTS=N_JOINTS, N_LINKS=N_LINKS, ROBOT_NAME="jaco2", **kwargs
         )
         self.filename = "%s/jaco2.ttt" % os.path.dirname(os.path.abspath(__file__))
@@ -312,7 +314,7 @@ class Config(BaseConfig):
         ]  # joint 5 orientation
 
     def _calc_T(self, name):  # noqa C907
-        """ Uses Sympy to generate the transform for a joint or link
+        """Uses Sympy to generate the transform for a joint or link
 
         name : string
             name of the joint, link, or end-effector

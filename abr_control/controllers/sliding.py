@@ -4,7 +4,7 @@ from .controller import Controller
 
 
 class Sliding(Controller):
-    """ Implements sliding control based on the description in
+    """Implements sliding control based on the description in
     [Slotine, Jean-Jacques E., and Weiping Li. "On the adaptive control of robot
     manipulators." The international journal of robotics research 6.3 (1987): 49-59.]
 
@@ -25,7 +25,7 @@ class Sliding(Controller):
 
     def __init__(self, robot_config, kd=160.0, lamb=30.0, cartesian=True):
 
-        super(Sliding, self).__init__(robot_config)
+        super().__init__(robot_config)
 
         self.kd = kd
         self.lamb = lamb
@@ -41,7 +41,7 @@ class Sliding(Controller):
         ref_frame="EE",
         offset=None,
     ):
-        """ Generates the control signal to move the EE to a target
+        """Generates the control signal to move the EE to a target
 
         Parameters
         ----------
